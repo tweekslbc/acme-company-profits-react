@@ -26,7 +26,6 @@
       const { Component } = React;
       const root = document.querySelector("#root");
       render(React.createElement("hr"), root);
-
       const Home = () => {
         return <h1>Acme Company Profits</h1>;
       };
@@ -37,9 +36,8 @@
           <div>
             <h1>Companies</h1>
             <ul>
-                {data && data.map((company, idx) => (
-                 <li key={idx}> {company.name} </li>
-              ))}
+              {data &&
+                data.map((company, idx) => <li key={idx}> {company.name} </li>)}
             </ul>
           </div>
         );
@@ -48,14 +46,14 @@
       const Nav = ({ path, companies, home }) => {
         return (
           <nav>
+            <Link to="/home" className={path === "/home" ? "selected" : ""}>
+              Acme Company Profits
+            </Link>
             <Link
               to="/companies"
               className={path === "/companies" ? "selected" : ""}
             >
               Companies
-            </Link>
-            <Link to="/home" className={path === "/home" ? "selected" : ""}>
-              Acme Company Profits
             </Link>
           </nav>
         );
@@ -72,24 +70,24 @@
           const companies = (await axios.get(
             "https://acme-users-api-rev.herokuapp.com/api/companies"
           )).data;
-          this.setState({ companies }, ()=> console.log(this.state) );
+          this.setState({ companies }, () => console.log(this.state));
         }
         render() {
           const { companies } = this.state;
           return (
             <HashRouter>
-                <Route
-                  render={location => (
-                    <Nav companies={companies} location={location} />
-                  )}
-                />
+               <Route
+                   render={location => (
+                  <Nav companies={companies} location={location} />
+                )}
+              />
               <Switch>
                 <Route
                   path="/companies"
-                  render={() => <Companies data={companies} />}
+                  render={(props) => <Companies data={ companies } {...props}/>}
                 />
-                <Route exact path="/home" component={Home} />
-                <Route exact path="/" component={Companies} />
+                <Route exact path="/home" component={ Home } />
+                <Route exact path="/" component={ Companies } />
               </Switch>
             </HashRouter>
           );
