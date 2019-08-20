@@ -17,22 +17,31 @@
 
         const Home = () => {
         return <h1>Acme Company Profits</h1>;
-      };
+        };
 
         const Companies = () => {
           return <h1>Companies</h1>
         };
 
-
-
-
-
-        const Nav = ({ path, companies, Acme Company Profits})=> {
+        const Nav = ({ path, companies, home})=> {
       return (
         <nav>
           <Link to='/companies' className={ path === '/companies' ? 'selected' : ''}>Companies</Link>
           <Link to='/home' className={ path === '/home'  ? 'selected' : ''}>Acme Company Profits</Link>
         </nav>
+
+
+        class App extends Component{
+          constructor(){
+            super();
+            this.state = {
+              companies: [],
+            }
+          }
+        }
+        async componentDidMount(){
+        const companies = (await axios.get('https://acme-users-api-rev.herokuapp.com/api/companies')).data;
+
       );
     }
     </script>
