@@ -14,12 +14,24 @@
         const { Component } = React;
         const root = document.querySelector("#root");
         render(React.createElement("hr"), root);
-    <script>
+
+        const Home = () => {
+        return <h1>Acme Company Profits</h1>;
+      };
+
+        const Companies = () => {
+          return <h1>Companies</h1>
+        };
+
+
+
+
+
         const Nav = ({ path, companies, Acme Company Profits})=> {
       return (
         <nav>
           <Link to='/companies' className={ path === '/companies' ? 'selected' : ''}>Companies</Link>
-          <Link to='/acme company profits' className={ path === '/acme company profits'  ? 'selected' : ''}>Acme Company Profits</Link>
+          <Link to='/home' className={ path === '/home'  ? 'selected' : ''}>Acme Company Profits</Link>
         </nav>
       );
     }
