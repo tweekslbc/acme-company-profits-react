@@ -12,69 +12,88 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.1/react-router-dom.js"></script>
     <style>
-    nav {
-      display: flex;
-      justify-content: space-around;
-    }
+      nav {
+        display: flex;
+        justify-content: space-around;
+      }
     </style>
-
   </head>
   <body>
     <div id="root"></div>
     <script type="text/babel">
-          const { HashRouter, Switch, Link, Route, Redirect } = ReactRouterDOM;
-          const { render } = ReactDOM;
-          const { Component } = React;
-          const root = document.querySelector("#root");
-          render(React.createElement("hr"), root);
+      const { HashRouter, Switch, Link, Route, Redirect } = ReactRouterDOM;
+      const { render } = ReactDOM;
+      const { Component } = React;
+      const root = document.querySelector("#root");
+      render(React.createElement("hr"), root);
 
-          const Home = () => {
-          return <h1>Acme Company Profits</h1>;
-          };
+      const Home = () => {
+        return <h1>Acme Company Profits</h1>;
+      };
 
-          const Companies = () => {
-            return <h1>Companies</h1>
-          };
+      const Companies = props => {
+        const data = props.data;
+        return (
+          <div>
+            <h1>Companies</h1>
+            <ul>
+                {data && data.map((company, idx) => (
+                 <li key={idx}> {company.name} </li>
+              ))}
+            </ul>
+          </div>
+        );
+      };
 
-          const Nav = ({ path, companies, home})=> {
+      const Nav = ({ path, companies, home }) => {
         return (
           <nav>
-            <Link to='/companies' className={ path === '/companies' ? 'selected' : ''}>Companies</Link>
-            <Link to='/home' className={ path === '/home'  ? 'selected' : ''}>Acme Company Profits</Link>
+            <Link
+              to="/companies"
+              className={path === "/companies" ? "selected" : ""}
+            >
+              Companies
+            </Link>
+            <Link to="/home" className={path === "/home" ? "selected" : ""}>
+              Acme Company Profits
+            </Link>
           </nav>
+        );
+      };
+
+      class App extends Component {
+        constructor() {
+          super();
+          this.state = {
+            companies: []
+          };
+        }
+        async componentDidMount() {
+          const companies = (await axios.get(
+            "https://acme-users-api-rev.herokuapp.com/api/companies"
+          )).data;
+          this.setState({ companies }, ()=> console.log(this.state) );
+        }
+        render() {
+          const { companies } = this.state;
+          return (
+            <HashRouter>
+                <Route
+                  render={location => (
+                    <Nav companies={companies} location={location} />
+                  )}
+                />
+              <Switch>
+                <Route
+                  path="/companies"
+                  render={() => <Companies data={companies} />}
+                />
+                <Route exact path="/home" component={Home} />
+                <Route exact path="/" component={Companies} />
+              </Switch>
+            </HashRouter>
           );
-          }
-
-
-
-          class App extends Component{
-            constructor(){
-              super();
-              this.state = {
-                companies: [],
-              }
-            }
-          async componentDidMount(){
-          const companies = (await axios.get('https://acme-users-api-rev.herokuapp.com/api/companies')).data;
-          this.setState({ companies });
-          }
-          render(){
-            const { companies } = this.state;
-            return (
-              <HashRouter>
-                <Switch>
-                <Route render={ (location)=>
-                <Nav companies={ companies } location={location}/> } />
-                <Route path='/companies' render={
-                ()=> <Companies data={ companies }/> } />
-                <Route exact path='/home' component= { Home } />
-                <Route exact path='/' component= { Companies } />
-
-                </Switch>
-              </HashRouter>
-
-            )
-          }
+        }
       }
       render(<App />, root);
     </script>
